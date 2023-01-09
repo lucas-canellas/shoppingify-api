@@ -1,5 +1,7 @@
 package com.lucasdc.shoppingifyapi.controllers;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasdc.shoppingifyapi.models.Cart;
-import com.lucasdc.shoppingifyapi.models.CartInput;
 import com.lucasdc.shoppingifyapi.models.StatusCart;
 import com.lucasdc.shoppingifyapi.models.User;
+import com.lucasdc.shoppingifyapi.models.inputs.CartInput;
+import com.lucasdc.shoppingifyapi.models.outputs.CartModel;
+import com.lucasdc.shoppingifyapi.models.outputs.UserIdModel;
 import com.lucasdc.shoppingifyapi.repositories.CartRepository;
 import com.lucasdc.shoppingifyapi.services.CartService;
 import com.lucasdc.shoppingifyapi.services.UserService;
@@ -17,12 +21,6 @@ import com.lucasdc.shoppingifyapi.services.UserService;
 @RestController
 @RequestMapping("/api/carts")
 public class CartController {
-
-    
-/*  String name;
-    StatusCart status;
-    User user;
-    LocalDateTime created_at; */
 
     @Autowired
     private CartService cartService;
@@ -34,7 +32,7 @@ public class CartController {
     private UserService userService;
     
     @PostMapping
-    public Cart createOrEditCart(@RequestBody CartInput cartInput) {
+    public CartModel createOrEditCart(@RequestBody CartInput cartInput) {
 
         User user = userService.getUserAuthenticated();
         Cart activeCart = cartRepository.findCartByUserAndActive(user).orElseGet(
@@ -49,8 +47,16 @@ public class CartController {
         );
 
         activeCart.setName(cartInput.getName());
+        cartService.save(activeCart);
 
-        return cartService.save(activeCart); 
+        CartModel cartModel = new CartModel();
+        cartModel.setName(activeCart.getName());
+        cartModel.setStatus(activeCart.getStatus());
+        UserIdModel userIdModel = new UserIdModel();
+        userIdModel.setId(activeCart.getUser().getId());
+        cartModel.setUser(userIdModel);
+
+        return cartModel; 
 
     }
 
@@ -61,6 +67,8 @@ public class CartController {
             () -> new RuntimeException("Cart not found")
         );
         activeCart.setStatus(StatusCart.COMPLETED);
+        activeCart.setCreated_at(LocalDateTime.now());
+        cartService.save(activeCart);
     }
 
     @PostMapping("/canceled")
@@ -70,6 +78,8 @@ public class CartController {
             () -> new RuntimeException("Cart not found")
         );
         activeCart.setStatus(StatusCart.CANCELED);
+        activeCart.setCreated_at(LocalDateTime.now());
+        cartService.save(activeCart);
     }
     
 

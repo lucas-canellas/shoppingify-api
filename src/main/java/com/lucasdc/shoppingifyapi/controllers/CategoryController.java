@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasdc.shoppingifyapi.models.Category;
-import com.lucasdc.shoppingifyapi.models.CategoryResumoModel;
 import com.lucasdc.shoppingifyapi.models.Item;
-import com.lucasdc.shoppingifyapi.models.ItemResumoModel;
+import com.lucasdc.shoppingifyapi.models.outputs.CategoryModel;
+import com.lucasdc.shoppingifyapi.models.outputs.CategoryResumoModel;
+import com.lucasdc.shoppingifyapi.models.outputs.ItemResumoModel;
 import com.lucasdc.shoppingifyapi.repositories.CategoryRepository;
 import com.lucasdc.shoppingifyapi.services.CategoryService;
 
@@ -29,8 +30,14 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        return ResponseEntity.ok().body(categoryService.save(category));
+    public ResponseEntity<CategoryModel> createCategory(@RequestBody Category category) {
+        categoryService.save(category);
+        
+        CategoryModel categoryModel = new CategoryModel();
+        categoryModel.setId(category.getId());
+        categoryModel.setName(category.getName());
+
+        return ResponseEntity.ok().body(categoryModel);
     }
 
     @GetMapping

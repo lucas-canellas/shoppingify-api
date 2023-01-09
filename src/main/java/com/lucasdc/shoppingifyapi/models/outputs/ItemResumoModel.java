@@ -1,4 +1,4 @@
-package com.lucasdc.shoppingifyapi.models;
+package com.lucasdc.shoppingifyapi.models.outputs;
 
 import lombok.Getter;
 import lombok.Setter;
