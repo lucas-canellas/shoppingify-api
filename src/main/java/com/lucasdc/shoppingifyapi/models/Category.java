@@ -1,13 +1,11 @@
 package com.lucasdc.shoppingifyapi.models;
 
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Entity
@@ -19,9 +17,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    @NotEmpty
     public String name;
-
-    @OneToMany(mappedBy = "category")
-    public List<Item> itens;
-
 }
