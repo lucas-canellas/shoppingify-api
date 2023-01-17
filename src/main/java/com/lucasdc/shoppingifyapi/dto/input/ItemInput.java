@@ -1,13 +1,18 @@
 package com.lucasdc.shoppingifyapi.dto.input;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CategoryInput {
+public class ItemInput {
 
-    @NotBlank
     private String name;
+
+    private String note;
+
+    private String image;    
+
+    private CategoryIdInput category;
+
 }

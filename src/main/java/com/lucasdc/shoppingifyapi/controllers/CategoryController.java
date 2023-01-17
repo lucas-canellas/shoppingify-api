@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasdc.shoppingifyapi.dto.input.CategoryInput;
 import com.lucasdc.shoppingifyapi.dto.output.CategoryOutput;
-import com.lucasdc.shoppingifyapi.exception.CategoryNotFoundException;
 import com.lucasdc.shoppingifyapi.models.Category;
 import com.lucasdc.shoppingifyapi.repositories.CategoryRepository;
 import com.lucasdc.shoppingifyapi.services.CategoryService;
@@ -43,25 +42,22 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public Category find(@PathVariable @Valid Long categoryId) {
-        try {
-            return categoryService.searchOrFail(categoryId);
-        } catch (CategoryNotFoundException e) {
-            throw new CategoryNotFoundException(e.getMessage());
-        }
+    public CategoryOutput find(@PathVariable Long categoryId) {
+        Category category = categoryService.searchOrFail(categoryId);       
         
+        return toOutput(category);
     }
 
     @GetMapping
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public List<CategoryOutput> findAll() {
+        return categoryRepository.findAll().stream().map(this::toOutput).toList();
     }
 
     @PutMapping("/{categoryId}")
-    public Category update(@PathVariable Long categoryId, @RequestBody Category category) {
-        Category categorySaved = categoryService.searchOrFail(categoryId);
-        categorySaved.setName(category.getName());
-        return categoryService.save(categorySaved);
+    public CategoryOutput update(@PathVariable Long categoryId, @RequestBody @Valid CategoryInput categoryInput) {
+        Category category = categoryService.searchOrFail(categoryId);
+        category.setName(categoryInput.getName());
+        return toOutput(categoryService.save(category));
     }
 
     @DeleteMapping("/{categoryId}")
