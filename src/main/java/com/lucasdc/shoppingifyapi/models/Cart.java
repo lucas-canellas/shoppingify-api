@@ -39,25 +39,4 @@ public class Cart {
     
     public LocalDateTime updated_at;
 
-    public void addItem(ItemCart item) {
-        this.items.add(item);
-    }
-
-    public void removeItem(ItemCart item) {
-        this.items.remove(item);
-    }
-
-    public void updateStatus(StatusCart status) {
-        this.status = status;
-    }
-
-    public void updateName(String name) {
-        this.name = name;
-    }
-
-    public void setQuantityItem(ItemCart item, int quantity) {
-        item.setQuantity(quantity);
-    }
-
-
 }

@@ -16,4 +16,10 @@ public class ItemCartService {
         return itemCartRepository.save(itemCart);
     }
 
+    public void delete(ItemCart itemCart) {
+        itemCartRepository.delete(itemCart);
+    }
+
+
+
 }

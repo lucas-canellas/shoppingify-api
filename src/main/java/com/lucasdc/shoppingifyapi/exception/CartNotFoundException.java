@@ -1,15 +1,15 @@
 package com.lucasdc.shoppingifyapi.exception;
 
-public class CartNotFoundException extends EntityNotFoundException{
+public class CartNotFoundException extends NegocioException {
 
     private static final long serialVersionUID = 1L;
 
-    public CartNotFoundException(String message) {
-        super(message);
+    public CartNotFoundException(String mensagem) {
+        super(mensagem);
     }
     
-    public CartNotFoundException(Long cartId) {
-        this(String.format("Não existe um cadastro de Cart com código %d", cartId));
+    public CartNotFoundException(Long categoryId) {
+        this(String.format("Não existe um cadastro de cart com código %d", categoryId));
     }
-
+    
 }

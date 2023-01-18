@@ -7,8 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.lucasdc.shoppingifyapi.models.Cart;
 import com.lucasdc.shoppingifyapi.models.StatusCart;
+import com.lucasdc.shoppingifyapi.models.User;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("SELECT c FROM Cart c WHERE c.status = ?1 AND c.user.id = ?2")
-    Optional<Cart> findByStatusAndUser(StatusCart status, Long userId);  
+    Optional<Cart> findByStatusAndUser(StatusCart status, Long userId);
+
+    Optional<Cart> findByName(String name);  
 }
