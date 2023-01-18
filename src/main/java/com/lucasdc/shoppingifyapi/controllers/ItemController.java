@@ -51,16 +51,24 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<ItemOutput> save(@RequestBody @Valid ItemInput itemInput) {
         
-        Item item = toDomainObject(itemInput);   
+        Item item = toDomainObject(itemInput);  
+         
         ItemOutput itemOutput = toOutput(itemService.save(item)); 
 
         return ResponseEntity.ok(itemOutput);
     }
 
     @PutMapping("/{itemId}")
-    public ItemOutput update(@PathVariable Long itemId, @RequestBody @Valid ItemInput itemInput) {
-        Item item = toDomainObject(itemInput);
-        return toOutput(itemService.save(item));
+    public ItemOutput update(@PathVariable Long itemId, @RequestBody @Valid ItemInput itemInput) {        
+        
+        Item itemAtual = itemService.searchOrFail(itemId);
+
+        copyToDomainObject(itemInput, itemAtual);
+
+        itemAtual = itemService.save(itemAtual);
+
+        return toOutput(itemAtual);
+
     }
 
     @DeleteMapping("/{itemId}")
@@ -83,6 +91,19 @@ public class ItemController {
         itemOutput.setCategory(categoryOutput);
 
         return itemOutput;
+    }
+
+    
+    private Item copyToDomainObject(@Valid ItemInput itemInput, Item itemAtual) {
+
+        itemAtual.setName(itemInput.getName());
+        itemAtual.setImage(itemInput.getImage());
+        itemAtual.setNote(itemInput.getNote());
+
+        Category category = categoryService.searchOrFail(itemInput.getCategory().getId());
+        itemAtual.setCategory(category);        
+
+        return itemAtual;
     }
 
     private Item toDomainObject(ItemInput itemInput) {

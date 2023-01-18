@@ -8,12 +8,15 @@ import com.lucasdc.shoppingifyapi.exception.NegocioException;
 import com.lucasdc.shoppingifyapi.models.Category;
 import com.lucasdc.shoppingifyapi.repositories.CategoryRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CategoryService {
     
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Transactional
     public Category save(Category category) {
         Category categorySaved = categoryRepository.findByName(category.getName()).orElse(null);
         
@@ -24,6 +27,7 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
+    @Transactional
     public void delete(Long id) {
         Category category = searchOrFail(id);
         categoryRepository.delete(category);

@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.lucasdc.shoppingifyapi.exception.NegocioException;
 import com.lucasdc.shoppingifyapi.models.Role;
 import com.lucasdc.shoppingifyapi.models.User;
 import com.lucasdc.shoppingifyapi.repositories.UserRepository;
@@ -22,6 +23,11 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     
     public AuthenticationResponse register(RegisterRequest request) {
+
+        if(repository.existsByEmail(request.getEmail())) {
+            throw new NegocioException("Email already in use");
+        }
+
         var user = User.builder()
             .name(request.getName())  
             .email(request.getEmail())          
