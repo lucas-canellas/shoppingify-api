@@ -37,6 +37,7 @@ public class ItemController {
     @Autowired
     private CategoryService categoryService;
 
+
     @GetMapping
     public List<ItemOutput> findAll() {
         return itemRepository.findAll().stream().map(this::toOutput).toList();
