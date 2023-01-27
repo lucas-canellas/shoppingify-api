@@ -9,9 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.lucasdc.shoppingifyapi.core.security.config.JwtService;
 import com.lucasdc.shoppingifyapi.domain.exception.NegocioException;
+import com.lucasdc.shoppingifyapi.domain.models.Cart;
 import com.lucasdc.shoppingifyapi.domain.models.Role;
+import com.lucasdc.shoppingifyapi.domain.models.StatusCart;
 import com.lucasdc.shoppingifyapi.domain.models.User;
+import com.lucasdc.shoppingifyapi.domain.repositories.CartRepository;
 import com.lucasdc.shoppingifyapi.domain.repositories.UserRepository;
+import com.lucasdc.shoppingifyapi.domain.services.CartService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +28,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final CartRepository cartRepository;
     
     public AuthenticationResponse register(RegisterRequest request) {
 
@@ -52,6 +57,18 @@ public class AuthenticationService {
         );
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+
+        Cart cart = cartRepository.findByStatusAndUser(StatusCart.ACTIVE, user.getId()).orElse(null);
+
+        if(cart == null) {
+            Cart cart2 = new Cart();
+            cart2.setName("Lista de compras");
+            cart2.setStatus(StatusCart.ACTIVE);
+
+            cart2.setUser(user);
+            cartRepository.save(cart2);    
+
+        }
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 

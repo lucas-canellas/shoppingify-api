@@ -64,6 +64,19 @@ public class CartController {
     public ResponseEntity<List<CartOutput>> getAllCarts() {
         return ResponseEntity.ok(cartRepository.findAll().stream().map(this::toOutput).toList());
     }
+    
+    @GetMapping("/active")
+    public ResponseEntity<CartOutput> getActiveCart() {
+        User user = authenticationService.getUser();
+
+        Cart cart = cartRepository.findByStatusAndUser(StatusCart.ACTIVE, user.getId()).orElse(null);
+
+        if(cart == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(toOutput(cart));
+    }
 
     @GetMapping("/{id}")
     public CartOutput getCartById(@PathVariable Long id) {
