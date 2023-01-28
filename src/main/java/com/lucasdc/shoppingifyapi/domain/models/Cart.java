@@ -21,22 +21,22 @@ public class Cart {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
-    public String name;
+    private String name;
 
     @Enumerated(EnumType.STRING)
-    public StatusCart status;
+    private StatusCart status;
     
     @ManyToOne
     @JoinColumn(name = "user_id")
-    public User user;
+    private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    public List<ItemCart> items;
+    private List<ItemCart> items;
 
-    public LocalDateTime created_at;
+    private LocalDateTime created_at;
     
-    public LocalDateTime updated_at;
+    private LocalDateTime updated_at;
 
 }

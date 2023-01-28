@@ -1,5 +1,6 @@
 package com.lucasdc.shoppingifyapi.domain.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByStatusAndUser(StatusCart status, Long userId);
 
     Optional<Cart> findByName(String name);  
+    
+    @Query("SELECT c FROM Cart c WHERE c.user.id = ?1 AND c.status != 'ACTIVE'")
+    List<Cart> findByUser(Long userId);
 }

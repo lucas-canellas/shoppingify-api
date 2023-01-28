@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lucasdc.shoppingifyapi.domain.exception.CartNotFoundException;
+import com.lucasdc.shoppingifyapi.domain.exception.NegocioException;
 import com.lucasdc.shoppingifyapi.domain.models.Cart;
 import com.lucasdc.shoppingifyapi.domain.models.Item;
 import com.lucasdc.shoppingifyapi.domain.models.ItemCart;
@@ -32,9 +33,23 @@ public class CartService {
         cartRepository.delete(cart);
     }
 
-    public ItemCart updateQuantity(Cart cart, Item item, Integer quantity) {
+    public ItemCart addOne(Cart cart, Item item) {
         ItemCart itemCart = itemCartRepository.findByItemAndCart(item, cart).orElseThrow(() -> new CartNotFoundException(cart.getId()));
-        itemCart.setQuantity(quantity);
+
+        itemCart.setQuantity(itemCart.getQuantity() + 1);
+        itemCartService.save(itemCart);
+
+        return itemCart;
+    }
+
+    public ItemCart removeOne(Cart cart, Item item) {
+        ItemCart itemCart = itemCartRepository.findByItemAndCart(item, cart).orElseThrow(() -> new CartNotFoundException(cart.getId()));
+        
+        if(itemCart.getQuantity() <= 1) {
+            throw new NegocioException("Não é possível diminuir a quantidade do item abaixo de 1");
+        }
+        
+        itemCart.setQuantity(itemCart.getQuantity() - 1);
         itemCartService.save(itemCart);
 
         return itemCart;
