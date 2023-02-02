@@ -14,7 +14,7 @@
 	<name>shoppingify-api</name>
 	<description>Api projeto shoppingify</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
