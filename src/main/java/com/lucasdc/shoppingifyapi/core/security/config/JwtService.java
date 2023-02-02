@@ -69,8 +69,8 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        String secretKey = System.getenv("JWT_SECRET_KEY_SHOPPINGIFY");
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        /* String secretKey = System.getenv("JWT_SECRET_KEY_SHOPPINGIFY"); */
+        byte[] keyBytes = Decoders.BASE64.decode("73357638792F423F4528482B4D6251655468566D597133743677397A24432646");
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
