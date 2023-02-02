@@ -11,6 +11,9 @@ import lombok.Setter;
 @Setter
 public class ItemInput {
 
+/*     @NotBlank
+    private Long itemId; */
+
     @NotBlank
     @Column(unique = true)
     private String name;
@@ -22,5 +25,8 @@ public class ItemInput {
     @Valid
     @NotNull
     private CategoryIdInput category;
+
+/*     @NotNull
+    private Integer quantity; */
 
 }

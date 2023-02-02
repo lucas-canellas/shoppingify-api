@@ -1,6 +1,6 @@
 package com.lucasdc.shoppingifyapi.domain.exception;
 
-public class CartNotFoundException extends NegocioException {
+public class CartNotFoundException extends EntityNotFoundException {
 
     private static final long serialVersionUID = 1L;
 

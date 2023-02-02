@@ -1,13 +1,9 @@
 package com.lucasdc.shoppingifyapi.api.controllers;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasdc.shoppingifyapi.api.dto.input.CartInput;
+import com.lucasdc.shoppingifyapi.api.dto.input.Inputquantity;
+import com.lucasdc.shoppingifyapi.api.dto.input.ItemCartInput;
 import com.lucasdc.shoppingifyapi.api.dto.output.CartOutput;
 import com.lucasdc.shoppingifyapi.api.dto.output.ItemCartOutput;
 import com.lucasdc.shoppingifyapi.api.dto.output.ItemResumoOutput;
@@ -31,8 +29,6 @@ import com.lucasdc.shoppingifyapi.domain.repositories.CartRepository;
 import com.lucasdc.shoppingifyapi.domain.repositories.ItemCartRepository;
 import com.lucasdc.shoppingifyapi.domain.repositories.ItemRepository;
 import com.lucasdc.shoppingifyapi.domain.services.CartService;
-import com.lucasdc.shoppingifyapi.domain.services.ItemCartService;
-import com.lucasdc.shoppingifyapi.domain.services.ItemService;
 
 import jakarta.validation.Valid;
 
@@ -44,22 +40,16 @@ public class CartController {
     private CartService cartService;
 
     @Autowired
-    private CartRepository cartRepository;
+    public CartRepository cartRepository;
 
     @Autowired
     private AuthenticationService authenticationService;
 
     @Autowired
-    private ItemRepository itemRepository;
+    public ItemRepository itemRepository;
 
     @Autowired
-    private ItemCartService itemCartService;
-
-    @Autowired
-    private ItemCartRepository itemCartRepository;
-
-    @Autowired
-    private ItemService itemService;
+    public ItemCartRepository itemCartRepository;  
 
     @GetMapping()
     public ResponseEntity<List<CartOutput>> getAllCartsByUse() {
@@ -85,10 +75,10 @@ public class CartController {
     
 
     @GetMapping("/{id}")
-    public CartOutput getCartById(@PathVariable Long id) {
+    public ResponseEntity<CartOutput> getCartById(@PathVariable Long id) {
         Cart cart = cartService.searchOrFail(id);
 
-        return toOutput(cart);
+        return ResponseEntity.ok(toOutput(cart));
     }
 
     @PostMapping
@@ -99,47 +89,6 @@ public class CartController {
         cart = cartService.save(cart);        
         
         return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/complete")
-    public ResponseEntity<CartOutput> completeCart() {
-        
-        User user = authenticationService.getUser();
-
-        Cart cart = cartRepository.findByStatusAndUser(StatusCart.ACTIVE, user.getId()).orElse(null);
-        
-
-        cart.setStatus(StatusCart.COMPLETED);
-        cart.setCreated_at(LocalDateTime.now());
-        cart = cartService.save(cart);
-
-        Cart newCart = new Cart();
-        newCart.setName("Lista de compras");
-        newCart.setStatus(StatusCart.ACTIVE);
-        newCart.setUser(user);
-        newCart = cartService.save(newCart);
-
-        return ResponseEntity.ok(toOutput(newCart));
-    }
-
-    @PutMapping("/cancel")
-    public ResponseEntity<CartOutput> cancelCart() {
-        
-        User user = authenticationService.getUser();
-
-        Cart cart = cartRepository.findByStatusAndUser(StatusCart.ACTIVE, user.getId()).orElse(null);        
-    
-        cart.setStatus(StatusCart.CANCELED);
-        cart.setCreated_at(LocalDateTime.now());
-        cart = cartService.save(cart);
-
-        Cart newCart = new Cart();
-        newCart.setName("Lista de compras");
-        newCart.setStatus(StatusCart.ACTIVE);
-        newCart.setUser(user);
-        newCart = cartService.save(newCart);
-
-        return ResponseEntity.ok(toOutput(newCart));
     }
 
     @PutMapping("/update-name")
@@ -155,70 +104,30 @@ public class CartController {
         return ResponseEntity.ok(toOutput(cart));
     }
 
-    @PostMapping("/add/{itemId}")
-    public ResponseEntity<ItemCartOutput> addItemCart(@PathVariable Long itemId) {
-
-        Item item = itemService.searchOrFail(itemId);
-
-        ItemCart itemCart = itemCartService.create(item); 
-        
-        return ResponseEntity.ok(toItemCartOutput(itemCart));
-    }
-
-
-    
-    @PostMapping("/remove/{id}")
-    public ResponseEntity<Void> removeItemCart(@PathVariable Long id) {
-
-        User user = authenticationService.getUser();
-
-        Cart cart = cartRepository.findByStatusAndUser(StatusCart.ACTIVE, user.getId()).get();
-        Item item = itemRepository.findById(id).get();
-
-        ItemCart itemCart = itemCartRepository.findByItemAndCart(item, cart).get();
-
-        itemCartService.delete(itemCart);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCart(@PathVariable Long id) {
-        Optional<Cart> cart = cartRepository.findById(id);
-        if (cart.isPresent()) {
-            cartRepository.delete(cart.get());
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }    
-
-    @PutMapping("/item/{itemId}/add-quantity-1")
-    public ResponseEntity<ItemCartOutput> addOneItemCart(@PathVariable Long itemId) {
+    @PutMapping("/item/{itemId}/update-quantity")
+    public ResponseEntity<ItemCartOutput> updateQuantity(@PathVariable Long itemId, Inputquantity inputQuantity) {
         User user = authenticationService.getUser();
 
         Cart cart = cartRepository.findByStatusAndUser(StatusCart.ACTIVE, user.getId()).get();
         Item item = itemRepository.findById(itemId).get();
 
-        ItemCart itemCart = cartService.addOne(cart, item);
-        
-        return ResponseEntity.ok(toItemCartOutput(itemCart));
-    }
-
-    @PutMapping("/item/{itemId}/remove-quantity-1")
-    public ResponseEntity<ItemCartOutput> removeOneItemCart(@PathVariable Long itemId) {
-        User user = authenticationService.getUser();
-
-        Cart cart = cartRepository.findByStatusAndUser(StatusCart.ACTIVE, user.getId()).get();
-        Item item = itemRepository.findById(itemId).get();
-
-        ItemCart itemCart = cartService.removeOne(cart, item);
+        ItemCart itemCart = cartService.updateQuantity(cart, item, inputQuantity.getQuantity());
         
         return ResponseEntity.ok(toItemCartOutput(itemCart));
     }
     
+    @PutMapping("/save-cart")  
+    public ResponseEntity<CartOutput> saveCart(@Valid @RequestBody CartInput cartInput) {
+        User user = authenticationService.getUser();
+
+        Cart cart = cartService.sendToHistory(this, cartInput, user);
+
+        return ResponseEntity.ok(toOutput(cart));
+    }
 
     private CartOutput toOutput(Cart cart) {
         CartOutput cartOutput = new CartOutput();
+        cartOutput.setId(cart.getId());
         cartOutput.setName(cart.getName());
         cartOutput.setStatus(cart.getStatus());
         cartOutput.setCreated_at(cart.getCreated_at());
@@ -262,9 +171,18 @@ public class CartController {
 
         Cart cart = new Cart();
         cart.setName(cartInput.getName());
-        cart.setStatus(StatusCart.ACTIVE);
+        cart.setStatus(cartInput.getStatus());
         User user = authenticationService.getUser();
         cart.setUser(user);
+        
+        for(ItemCartInput itemCartInput : cartInput.getItems()) {
+            Item item = itemRepository.findById(itemCartInput.getItemId()).get();
+            ItemCart itemCart = new ItemCart();
+            itemCart.setQuantity(itemCartInput.getQuantity());
+            itemCart.setCart(cart);
+            itemCart.setItem(item);
+            itemCartRepository.save(itemCart);
+        }
 
         return cart;
     }

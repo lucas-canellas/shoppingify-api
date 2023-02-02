@@ -42,10 +42,10 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public CategoryOutput find(@PathVariable Long categoryId) {
+    public ResponseEntity<CategoryOutput> find(@PathVariable Long categoryId) {
         Category category = categoryService.searchOrFail(categoryId);       
         
-        return toOutput(category);
+        return ResponseEntity.ok(toOutput(category));
     }
 
     @GetMapping
@@ -54,10 +54,10 @@ public class CategoryController {
     }
 
     @PutMapping("/{categoryId}")
-    public CategoryOutput update(@PathVariable Long categoryId, @RequestBody @Valid CategoryInput categoryInput) {
+    public ResponseEntity<CategoryOutput> update(@PathVariable Long categoryId, @RequestBody @Valid CategoryInput categoryInput) {
         Category category = categoryService.searchOrFail(categoryId);
         category.setName(categoryInput.getName());
-        return toOutput(categoryService.save(category));
+        return ResponseEntity.ok(toOutput(categoryService.save(category)));
     }
 
     @DeleteMapping("/{categoryId}")

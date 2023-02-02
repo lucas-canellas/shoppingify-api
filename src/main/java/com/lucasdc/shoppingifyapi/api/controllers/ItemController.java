@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,9 +43,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemOutput find(@PathVariable Long itemId) {
+    public ResponseEntity<ItemOutput> find(@PathVariable Long itemId) {
         Item item = itemService.searchOrFail(itemId);       
-        return toOutput(item);
+        return ResponseEntity.ok(toOutput(item));
     }
 
     @PostMapping
@@ -60,7 +59,7 @@ public class ItemController {
     }
 
     @PutMapping("/{itemId}")
-    public ItemOutput update(@PathVariable Long itemId, @RequestBody @Valid ItemInput itemInput) {        
+    public ResponseEntity<ItemOutput> update(@PathVariable Long itemId, @RequestBody @Valid ItemInput itemInput) {        
         
         Item itemAtual = itemService.searchOrFail(itemId);
 
@@ -68,7 +67,7 @@ public class ItemController {
 
         itemAtual = itemService.save(itemAtual);
 
-        return toOutput(itemAtual);
+        return ResponseEntity.ok(toOutput(itemAtual));
 
     }
 

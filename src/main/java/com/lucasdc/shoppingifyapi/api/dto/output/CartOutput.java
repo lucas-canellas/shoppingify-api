@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CartOutput {
+    private Long id;
     private String name;
     private StatusCart status;
     private UserOutput user;

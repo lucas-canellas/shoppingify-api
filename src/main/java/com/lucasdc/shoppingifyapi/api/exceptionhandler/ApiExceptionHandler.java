@@ -1,5 +1,6 @@
 package com.lucasdc.shoppingifyapi.api.exceptionhandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import com.lucasdc.shoppingifyapi.domain.exception.CategoryNotFoundException;
 import com.lucasdc.shoppingifyapi.domain.exception.EntityNotFoundException;
 import com.lucasdc.shoppingifyapi.domain.exception.NegocioException;
 
@@ -36,7 +35,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
     
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleCategoryNotFoundException(CategoryNotFoundException e) {
+    public ResponseEntity<?> handleCategoryNotFoundException(EntityNotFoundException e) {
         
         HttpStatus status = HttpStatus.NOT_FOUND;
         String userMessage = e.getMessage();        
@@ -49,6 +48,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 
         
         return ResponseEntity.status(404).body(problem);
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<?> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
+        
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String userMessage = "O item esta sendo utilizado em uma lista de compras.";        
+        
+        Problem problem = Problem.builder()
+        .timestamp(LocalDateTime.now())
+        .userMessage(userMessage)
+        .status(status.value())
+        .build();
+                
+        
+        return ResponseEntity.status(400).body(problem);
     }
 
     @Override
@@ -75,6 +90,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
+    
+
 
 
 }

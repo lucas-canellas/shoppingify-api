@@ -15,8 +15,6 @@ import com.lucasdc.shoppingifyapi.domain.models.StatusCart;
 import com.lucasdc.shoppingifyapi.domain.models.User;
 import com.lucasdc.shoppingifyapi.domain.repositories.CartRepository;
 import com.lucasdc.shoppingifyapi.domain.repositories.UserRepository;
-import com.lucasdc.shoppingifyapi.domain.services.CartService;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
