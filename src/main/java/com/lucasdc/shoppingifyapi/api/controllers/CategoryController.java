@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lucasdc.shoppingifyapi.api.dto.input.CategoryInput;
 import com.lucasdc.shoppingifyapi.api.dto.output.CategoryOutput;
+import com.lucasdc.shoppingifyapi.core.security.auth.AuthenticationService;
+import com.lucasdc.shoppingifyapi.api.dto.output.CategoryCountOutput;
 import com.lucasdc.shoppingifyapi.domain.models.Category;
+import com.lucasdc.shoppingifyapi.domain.models.User;
 import com.lucasdc.shoppingifyapi.domain.repositories.CategoryRepository;
 import com.lucasdc.shoppingifyapi.domain.services.CategoryService;
 
@@ -29,7 +32,11 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    public CategoryRepository categoryRepository;
+
+    @Autowired
+    private AuthenticationService authenticationService;
+    
     
 
     @PostMapping()
@@ -63,6 +70,13 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public void delete(@PathVariable Long categoryId) {
         categoryService.delete(categoryId);
+    }
+
+    @GetMapping("/top-categories")
+    public List<CategoryCountOutput> findTop3() {
+        User user = authenticationService.getUser();
+
+        return categoryService.getTopCategories(user);
     }
 
     private CategoryOutput toOutput(Category category) {

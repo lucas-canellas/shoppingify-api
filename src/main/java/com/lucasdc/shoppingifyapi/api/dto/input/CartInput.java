@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.lucasdc.shoppingifyapi.domain.models.StatusCart;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 

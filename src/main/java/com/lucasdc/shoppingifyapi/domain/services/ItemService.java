@@ -1,14 +1,18 @@
 package com.lucasdc.shoppingifyapi.domain.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lucasdc.shoppingifyapi.api.dto.output.ItemsCountOutput;
 import com.lucasdc.shoppingifyapi.domain.exception.ItemNotFoundException;
 import com.lucasdc.shoppingifyapi.domain.exception.NegocioException;
 import com.lucasdc.shoppingifyapi.domain.models.Category;
 import com.lucasdc.shoppingifyapi.domain.models.Item;
+import com.lucasdc.shoppingifyapi.domain.models.User;
 import com.lucasdc.shoppingifyapi.domain.repositories.ItemRepository;
 
 import jakarta.persistence.EntityManager;
@@ -50,8 +54,37 @@ public class ItemService {
         itemRepository.delete(item);
     }
 
+    public List<ItemsCountOutput> getTopItems(User user) {
+	    
+        List<Object[]> results = itemRepository.findItemsByUserId(user.getId());
+	
+	    List<ItemsCountOutput> itemsCount = new ArrayList<>();
+	
+	    for (Object[] result : results) {
+	        ItemsCountOutput item = new ItemsCountOutput();
+	        item.setName((String) result[0]);
+	        item.setTotal((Long) result[1]);
+	        itemsCount.add(item);
+	    }
+	    
+	    Long total = 0L;
+	    
+	    for (ItemsCountOutput item : itemsCount) {
+	        total += item.getTotal();
+	    }
+	    
+	    for (ItemsCountOutput item : itemsCount) {
+	        item.setPercent((item.getTotal() * 100) / total);
+	    }
+	
+	    
+	    return itemsCount;
+	}
+
     public Item searchOrFail(Long itemId) {
         return itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
     }
+
+
 
 }

@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lucasdc.shoppingifyapi.api.dto.input.ItemInput;
 import com.lucasdc.shoppingifyapi.api.dto.output.CategoryOutput;
 import com.lucasdc.shoppingifyapi.api.dto.output.ItemOutput;
+import com.lucasdc.shoppingifyapi.api.dto.output.ItemsCountOutput;
+import com.lucasdc.shoppingifyapi.core.security.auth.AuthenticationService;
 import com.lucasdc.shoppingifyapi.domain.models.Category;
 import com.lucasdc.shoppingifyapi.domain.models.Item;
+import com.lucasdc.shoppingifyapi.domain.models.User;
 import com.lucasdc.shoppingifyapi.domain.repositories.ItemRepository;
 import com.lucasdc.shoppingifyapi.domain.services.CategoryService;
 import com.lucasdc.shoppingifyapi.domain.services.ItemService;
@@ -32,10 +35,13 @@ public class ItemController {
     private ItemService itemService;
 
     @Autowired
-    private ItemRepository itemRepository;
+    public ItemRepository itemRepository;
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @GetMapping
     public List<ItemOutput> findAll() {
@@ -75,6 +81,14 @@ public class ItemController {
     public ResponseEntity<Void> delete(@PathVariable Long itemId) {
         itemService.delete(itemId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/top-items")
+    public  List<ItemsCountOutput> hello() {
+        
+        User user = authenticationService.getUser();
+        
+        return itemService.getTopItems(user);
     }
 
     private ItemOutput toOutput(Item item) {
