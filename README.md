@@ -1,3 +1,4 @@
+# Shoopingify API
 # Projeto Spring Boot + PostgreSQL
 
 ## Introdução
@@ -10,15 +11,15 @@ Este é o projeto Shoppingify, um desafio criado no site devchallenges.io. Ele c
 
 ## Configuração
 1. Clone o repositório para sua máquina local:
- - $ https://github.com/lucas-canellas/shoppingify-api.git
+ ```$ https://github.com/lucas-canellas/shoppingify-api.git```
  
 2. Crie um banco de dados no PostgreSQL e atualize o arquivo application.properties com suas credenciais do banco de dados.
 
 3. Execute o seguinte comando no terminal para construir o projeto e baixar as dependências:
- - $ mvn clean install
+  ```$ mvn clean install ```
  
 4. Inicie o aplicativo executando o seguinte comando:
- - $ mvn spring-boot:run
+  ```$ mvn spring-boot:run ```
 
 
 ## Endpoints da API
