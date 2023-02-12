@@ -1,37 +1,40 @@
-# Spring Boot + MySQL Project
+# Projeto Spring Boot + PostgreSQL
 
-## Introduction
-This project demonstrates the integration of Spring Boot with MySQL database. It provides a RESTful API to perform CRUD operations on a database table.
+## Introdução
+Este é o projeto Shoppingify, um desafio criado no site devchallenges.io. Ele consiste em desenvolver uma aplicação de lista de compras.
 
-## Requirements
-- Java 8 or later
-- Maven 3.0 or later
-- MySQL 5.7 or later
+## Requisitos
+- Java 17 ou posterior
+- Maven 3.0 ou posterior
+- PostgreSQL 12 ou posterior
 
-## Setup
-1. Clone the repository to your local machine:
-$ git clone https://github.com/<your-username>/springboot-mysql.git
-2. Create a database in MySQL and update the application.properties file with your database credentials.
-3. Run the following command in the terminal to build the project and download dependencies:
-$ mvn clean install
-4. Start the application by running the following command:
-$ mvn spring-boot:run
+## Configuração
+1. Clone o repositório para sua máquina local:
+ - $ https://github.com/lucas-canellas/shoppingify-api.git
+ 
+2. Crie um banco de dados no PostgreSQL e atualize o arquivo application.properties com suas credenciais do banco de dados.
 
-## API Endpoints
-The API provides the following endpoints:
-- GET /api/entities - Retrieve a list of all entities
-- GET /api/entities/{id} - Retrieve a specific entity by id
-- POST /api/entities - Create a new entity
-- PUT /api/entities/{id} - Update an existing entity
-- DELETE /api/entities/{id} - Delete an entity
+3. Execute o seguinte comando no terminal para construir o projeto e baixar as dependências:
+ - $ mvn clean install
+ 
+4. Inicie o aplicativo executando o seguinte comando:
+ - $ mvn spring-boot:run
 
-## Tools and Technologies
+
+## Endpoints da API
+OpenAPI (Swagger)
+- http://localhost:8080/swagger-ui/index.html
+
+## Ferramentas e Tecnologias
 - Spring Boot
-- MySQL
+- PostgreSQL
 - Hibernate
 - JPA
 - Maven
+- Swagger
 
-## Conclusion
-This project provides a simple example of how to integrate Spring Boot with MySQL using JPA and Hibernate. It can be used as a starting point for building more complex applications.
+
+
+
+
 
