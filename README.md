@@ -1,5 +1,5 @@
 # Shoopingify API
-# Projeto Spring Boot + PostgreSQL
+## Projeto Spring Boot + PostgreSQL
 
 ## Introdução
 Este é o projeto Shoppingify, um desafio criado no site devchallenges.io. Ele consiste em desenvolver uma aplicação de lista de compras.
