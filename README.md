@@ -9,6 +9,9 @@ Este é o projeto Shoppingify, um desafio criado no site devchallenges.io. Ele c
 - Maven 3.0 ou posterior
 - PostgreSQL 12 ou posterior
 
+## Frontend
+- https://github.com/lucas-canellas/shoppingify-frontend
+
 ## Configuração
 1. Clone o repositório para sua máquina local:
  ```$ https://github.com/lucas-canellas/shoppingify-api.git```
