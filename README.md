@@ -1,4 +1,4 @@
-# Shoopingify API
+# Shoopingify API.
 ## Projeto Spring Boot + PostgreSQL
 
 ## Introdução
